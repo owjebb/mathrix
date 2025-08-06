@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aplikasi Kuis Interaktif</title>
+  <title>MATHRIX</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -286,7 +286,7 @@
   <!-- Halaman Pemilihan Mode -->
   <div id="mode-select-page" class="container mx-auto px-4 py-16 max-w-4xl">
     <div class="bg-white rounded-xl shadow-xl p-8 mb-8 text-center">
-      <h1 class="text-4xl font-bold mb-12 text-indigo-700">Aplikasi Kuis Interaktif</h1>
+      <h1 class="text-4xl font-bold mb-12 text-indigo-700">MATHRIX</h1>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <button id="student-mode-btn" class="mode-button bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-12 px-8 rounded-xl shadow-lg">
@@ -378,7 +378,7 @@
   <div id="student-home-page" class="container mx-auto px-4 py-8 max-w-4xl hidden">
     <div class="bg-white rounded-xl shadow-xl p-8 mb-8">
       <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-indigo-700">Aplikasi Kuis Interaktif</h1>
+        <h1 class="text-3xl font-bold text-indigo-700">MATHRIX</h1>
         <div class="flex space-x-2">
           <button id="back-to-class-select" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg">
             Kembali ke Board
@@ -573,40 +573,40 @@
     // Data kunci jawaban berdasarkan board
     let answerKeysByClass = {
       'Board1': {
-        1: "25",
-        2: "144",
-        3: "1/4",
-        4: "15",
-        5: "64",
-        6: "36",
-        7: "49",
-        8: "8",
-        9: "12",
-        10: "20"
+        1: "55%;0,58;0,65;2/3",
+        2: "0,70;69%;0,65;5/8",
+        3: "3/8;39%;0,40;0,42",
+        4: "0,9;7/8;87%;0,85",
+        5: "0",
+        6: "0",
+        7: "0",
+        8: "0",
+        9: "0",
+        10: "0"
       },
       'Board2': {
-        1: "1/27",
-        2: "33",
-        3: "1/8",
-        4: "30",
-        5: "121",
-        6: "79",
-        7: "81",
-        8: "10",
-        9: "9",
-        10: "40"
+        1: "1/8",
+        2: "1/27",
+        3: "1/81",
+        4: "0",
+        5: "0",
+        6: "0",
+        7: "0",
+        8: "0",
+        9: "0",
+        10: "0"
       },
       'Board3': {
-        1: "16",
-        2: "225",
-        3: "3/8",
-        4: "45",
-        5: "169",
-        6: "84",
-        7: "100",
-        8: "15",
-        9: "18",
-        10: "35"
+        1: "8√3",
+        2: "10√5",
+        3: "11√14",
+        4: "0",
+        5: "0",
+        6: "0",
+        7: "0",
+        8: "0",
+        9: "0",
+        10: "0"
       }
     };
     
@@ -615,9 +615,9 @@
     
     // Jumlah soal per board
     let questionCountByClass = {
-      'Board1': 10,
-      'Board2': 10,
-      'Board3': 10
+      'Board1': 4,
+      'Board2': 3,
+      'Board3': 3
     };
     
     // Jumlah soal aktif (akan diubah berdasarkan kelas yang dipilih)
@@ -629,28 +629,28 @@
     // Data kelompok berdasarkan board
     const studentsByClass = {
       'Board1': [
-        "Kelompok 1",
-        "Kelompok 2",
-        "Kelompok 3",
-        "Kelompok 4",
-        "Kelompok 5",
-        "Kelompok 6"
+        "KELOMPOK 1",
+        "KELOMPOK 2",
+        "KELOMPOK 3",
+        "KELOMPOK 4",
+        "KELOMPOK 5",
+        "KELOMPOK 6"
       ],
       'Board2': [
-        "Kelompok 1",
-        "Kelompok 2",
-        "Kelompok 3",
-        "Kelompok 4",
-        "Kelompok 5",
-        "Kelompok 6"
+        "KELOMPOK 1",
+        "KELOMPOK 2",
+        "KELOMPOK 3",
+        "KELOMPOK 4",
+        "KELOMPOK 5",
+        "KELOMPOK 6"
       ],
       'Board3': [
-        "Kelompok 1",
-        "Kelompok 2",
-        "Kelompok 3",
-        "Kelompok 4",
-        "Kelompok 5",
-        "Kelompok 6"
+        "KELOMPOK 1",
+        "KELOMPOK 2",
+        "KELOMPOK 3",
+        "KELOMPOK 4",
+        "KELOMPOK 5",
+        "KELOMPOK 6"
       ]
     };
     
@@ -1156,3 +1156,4 @@
   </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96aa7b2e4182ea81',t:'MTc1NDQ0MDgwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
