@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MATHRIX</title>
+  <title>Kuis Interaktif - Tanpa Board</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -11,59 +11,26 @@
       background: linear-gradient(135deg, #6366f1, #8b5cf6);
       min-height: 100vh;
     }
-    
-    .number-button {
-      transition: all 0.2s ease;
-    }
-    
-    .number-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-    
-    .calculator-button {
-      transition: all 0.1s ease;
-    }
-    
-    .calculator-button:active {
-      transform: scale(0.95);
-    }
-    
+
+    .number-button { transition: all 0.2s ease; }
+    .number-button:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,.1); }
+
+    .calculator-button { transition: all 0.1s ease; }
+    .calculator-button:active { transform: scale(0.95); }
+
     .result-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 50;
-      animation: fadeIn 0.3s ease-out;
+      position: fixed; inset: 0; display: flex; justify-content: center; align-items: center;
+      z-index: 50; animation: fadeIn 0.3s ease-out; 
     }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
-    .hidden {
-      display: none;
-    }
+    @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+
+    .hidden { display: none; }
 
     .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 24px;
-      border-radius: 8px;
-      color: white;
-      font-weight: 500;
-      z-index: 100;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 100;
       animation: fadeInOut 3s ease forwards;
     }
-
     @keyframes fadeInOut {
       0% { opacity: 0; transform: translate(-50%, 20px); }
       10% { opacity: 1; transform: translate(-50%, 0); }
@@ -72,362 +39,96 @@
     }
 
     .loading-spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-      margin-left: 8px;
+      display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; margin-left: 8px;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    /* Styling untuk dropdown dengan banyak opsi */
-    #contestant {
-      max-height: 300px;
-    }
-    
-    /* Styling untuk tombol special character */
-    .special-char-button {
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-    
-    /* Styling untuk tombol huruf */
-    .letter-button {
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-    
-    /* Styling untuk tampilan pecahan */
-    .fraction-display {
-      display: inline-block;
-      position: relative;
-      vertical-align: middle;
-      text-align: center;
-      font-size: 1.5rem;
-    }
-    
-    .fraction-display .numerator {
-      display: block;
-      padding: 0 0.2em;
-      border-bottom: 1px solid;
-    }
-    
-    .fraction-display .denominator {
-      display: block;
-      padding: 0 0.2em;
-    }
-    
+    /* Pecahan */
+    .fraction-display { display: inline-block; position: relative; vertical-align: middle; text-align: center; font-size: 1.5rem; }
+    .fraction-display .numerator { display: block; padding: 0 0.2em; border-bottom: 1px solid; }
+    .fraction-display .denominator { display: block; padding: 0 0.2em; }
+    .active-input { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
 
-    
-    /* Modal styling */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-    
-    .modal-content {
-      background-color: white;
-      padding: 24px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
-    
-    /* Styling untuk tombol mode */
-    .mode-button {
-      transition: all 0.3s ease;
-    }
-    
-    .mode-button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Styling untuk keyboard input */
-    .keyboard-container {
-      padding: 10px;
-      background-color: #f3f4f6;
-      border-radius: 8px;
-    }
-    
+    /* Modal */
+    .modal { position: fixed; inset: 0; background-color: rgba(0,0,0,.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
+    .modal-content { background-color: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,.2); }
 
-    
-    /* Optimasi untuk tampilan landscape */
-    @media (min-width: 1024px) or (orientation: landscape) {
-      .answer-page-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-      
-      .answer-display-container {
-        grid-column: 1 / -1;
-      }
-      
-      .keyboard-container {
-        max-height: none;
-        overflow-y: visible;
-      }
-    }
-    
-    /* Styling untuk tombol aksi */
-    .action-button {
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    /* Styling untuk tombol numerik di modal pecahan */
-    .fraction-number-button {
-      transition: all 0.1s ease;
-    }
-    
-    .fraction-number-button:active {
-      transform: scale(0.95);
-    }
-    
-    /* Styling untuk input aktif di modal pecahan */
-    .active-input {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-    }
-    
-    /* Animasi untuk jawaban benar */
-    @keyframes correctAnimation {
-      0% { transform: scale(1); }
-      10% { transform: scale(1.1); }
-      20% { transform: scale(1); }
-      30% { transform: scale(1.05); }
-      40% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      60% { transform: scale(1); }
-      100% { transform: scale(1); }
-    }
-    
-    /* Animasi untuk jawaban salah */
-    @keyframes incorrectAnimation {
-      0% { transform: translateX(0); }
-      10% { transform: translateX(-10px); }
-      20% { transform: translateX(10px); }
-      30% { transform: translateX(-10px); }
-      40% { transform: translateX(10px); }
-      50% { transform: translateX(-5px); }
-      60% { transform: translateX(5px); }
-      70% { transform: translateX(-3px); }
-      80% { transform: translateX(3px); }
-      90% { transform: translateX(0); }
-    }
-    
-    .result-correct-content {
-      animation: correctAnimation 0.8s ease-in-out;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .result-incorrect-content {
-      animation: incorrectAnimation 0.8s ease-in-out;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    /* Styling untuk tombol kelas */
-    .class-button {
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .class-button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-    
-    .class-button::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background-color: rgba(255, 255, 255, 0.5);
-      transform: scaleX(0);
-      transform-origin: right;
-      transition: transform 0.3s ease;
-    }
-    
-    .class-button:hover::after {
-      transform: scaleX(1);
-      transform-origin: left;
+    /* Animasi hasil */
+    @keyframes correctAnimation { 0%{transform:scale(1)}10%{transform:scale(1.1)}20%{transform:scale(1)}30%{transform:scale(1.05)}40%{transform:scale(1)}50%{transform:scale(1.03)}60%{transform:scale(1)}100%{transform:scale(1)} }
+    @keyframes incorrectAnimation { 0%{transform:translateX(0)}10%{transform:translateX(-10px)}20%{transform:translateX(10px)}30%{transform:translateX(-10px)}40%{transform:translateX(10px)}50%{transform:translateX(-5px)}60%{transform:translateX(5px)}70%{transform:translateX(-3px)}80%{transform:translateX(3px)}90%{transform:translateX(0)} }
+    .result-correct-content, .result-incorrect-content { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .result-correct-content { animation: correctAnimation 0.8s ease-in-out; }
+    .result-incorrect-content { animation: incorrectAnimation 0.8s ease-in-out; }
+
+    .action-button { font-weight: bold; text-transform: uppercase; letter-spacing: .05em; }
+    .keyboard-container { padding: 10px; background-color: #f3f4f6; border-radius: 8px; }
+
+    @media (min-width: 1024px), (orientation: landscape) {
+      .answer-page-container { display: grid; grid-template-columns: 1fr; gap: 16px; }
+      .answer-display-container { grid-column: 1 / -1; }
+      .keyboard-container { max-height: none; overflow-y: visible; }
     }
   </style>
 </head>
 <body>
 
-  
-  <!-- Halaman Pemilihan Mode -->
+  <!-- Halaman Awal (tanpa Board, tanpa Mode Guru) -->
   <div id="mode-select-page" class="container mx-auto px-4 py-16 max-w-4xl">
     <div class="bg-white rounded-xl shadow-xl p-8 mb-8 text-center">
-      <h1 class="text-4xl font-bold mb-12 text-indigo-700">MATHRIX</h1>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <button id="student-mode-btn" class="mode-button bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-12 px-8 rounded-xl shadow-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-          Mode Siswa
-        </button>
-        
-        <button id="teacher-mode-btn" class="mode-button bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-12 px-8 rounded-xl shadow-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          Mode Guru
+      <h1 class="text-4xl font-bold mb-12 text-white bg-gradient-to-r from-indigo-500 to-fuchsia-500 inline-block px-6 py-3 rounded-lg">Kuis Interaktif</h1>
+      <div class="grid grid-cols-1 gap-8">
+        <button id="start-btn" class="mode-button bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-12 px-8 rounded-xl shadow-lg">
+          Mulai
         </button>
       </div>
     </div>
   </div>
-  
-  <!-- Halaman Pemilihan Kelas -->
-  <div id="class-select-page" class="container mx-auto px-4 py-8 max-w-4xl hidden">
-    <div class="bg-white rounded-xl shadow-xl p-8 mb-8">
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-indigo-700">Pilih Board</h1>
-        <button id="back-to-mode-select-from-class" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg">
-          Kembali
-        </button>
-      </div>
-      
-      <div class="grid grid-cols-3 gap-6">
-        <button id="board1-btn" class="class-button bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-10 px-6 rounded-xl shadow-lg">
-          BOARD 1
-        </button>
-        
-        <button id="board2-btn" class="class-button bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-10 px-6 rounded-xl shadow-lg">
-          BOARD 2
-        </button>
-        
-        <button id="board3-btn" class="class-button bg-purple-600 hover:bg-purple-700 text-white text-xl font-bold py-10 px-6 rounded-xl shadow-lg">
-          BOARD 3
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Halaman Guru -->
-  <div id="teacher-page" class="container mx-auto px-4 py-8 max-w-4xl hidden">
-    <div class="bg-white rounded-xl shadow-xl p-8 mb-8">
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-indigo-700">Panel Guru</h1>
-        <button id="back-to-mode-select" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg">
-          Kembali
-        </button>
-      </div>
-      
-      <div class="mb-8">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Pengaturan Kuis</h2>
-        
-        <div class="mb-4">
-          <label for="teacher-class-select" class="block text-lg font-medium text-gray-700 mb-2">Pilih Board:</label>
-          <select id="teacher-class-select" class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option value="" disabled selected>-- Pilih Board --</option>
-            <option value="Board1">BOARD 1</option>
-            <option value="Board2">BOARD 2</option>
-            <option value="Board3">BOARD 3</option>
-          </select>
-        </div>
-        
-        <div class="mb-4">
-          <label for="question-count" class="block text-lg font-medium text-gray-700 mb-2">Jumlah Soal:</label>
-          <input type="number" id="question-count" min="1" max="50" value="10" class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-        </div>
-        
-        <div class="mb-4">
-          <h3 class="text-lg font-medium text-gray-700 mb-2">Kunci Jawaban:</h3>
-          <div id="answer-keys-container" class="space-y-3">
-            <!-- Kunci jawaban akan dibuat dengan JavaScript -->
-          </div>
-        </div>
-        
-        <button id="save-settings" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg text-xl font-bold mt-4">Simpan Pengaturan</button>
-      </div>
-      
 
-    </div>
-  </div>
-  
-  <!-- Halaman Awal Siswa -->
+  <!-- Halaman Siswa (pilih kelompok & soal) -->
   <div id="student-home-page" class="container mx-auto px-4 py-8 max-w-4xl hidden">
     <div class="bg-white rounded-xl shadow-xl p-8 mb-8">
       <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-indigo-700">MATHRIX</h1>
+        <h1 class="text-3xl font-bold text-indigo-700">Pilih Kelompok & Nomor Soal</h1>
         <div class="flex space-x-2">
-          <button id="back-to-class-select" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg">
-            Kembali ke Board
-          </button>
-          <button id="back-to-mode-select-student" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg">
-            Menu Utama
+          <button id="back-to-start" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg">
+            Kembali
           </button>
         </div>
       </div>
-      
+
       <div class="mb-8">
         <label for="contestant" class="block text-lg font-medium text-gray-700 mb-2">Pilih Kelompok:</label>
         <select id="contestant" class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
           <option value="" disabled selected>-- Pilih Kelompok --</option>
-          <!-- Opsi kelompok akan diisi dengan JavaScript berdasarkan board yang dipilih -->
         </select>
       </div>
-      
+
       <div class="mb-4">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">Pilih Nomor Soal:</h2>
-        <div id="question-buttons" class="grid grid-cols-5 gap-4">
-          <!-- Tombol nomor soal akan dibuat dengan JavaScript -->
-        </div>
+        <div id="question-buttons" class="grid grid-cols-5 gap-4"></div>
       </div>
     </div>
   </div>
-  
+
   <!-- Halaman Input Jawaban -->
   <div id="answer-page" class="container mx-auto px-4 py-4 max-w-6xl hidden">
     <div class="bg-white rounded-xl shadow-xl p-6 relative">
-
-      
       <div class="flex justify-between items-center mb-4">
         <h2 id="question-number" class="text-2xl font-bold text-indigo-700">Soal #</h2>
         <h3 id="contestant-name" class="text-xl font-medium text-gray-700">Kelompok: </h3>
       </div>
-      
+
       <div class="answer-page-container">
         <div class="answer-display-container mb-4">
-          <label for="answer-display" class="block text-lg font-medium text-gray-700 mb-2">Jawaban:</label>
-          <div id="answer-display" class="w-full p-4 border-2 border-gray-300 rounded-lg text-2xl text-center font-bold min-h-[60px] flex items-center justify-center">
-            <!-- Jawaban akan ditampilkan di sini -->
-          </div>
+          <label class="block text-lg font-medium text-gray-700 mb-2">Jawaban:</label>
+          <div id="answer-display" class="w-full p-4 border-2 border-gray-300 rounded-lg text-2xl text-center font-bold min-h-[60px] flex items-center justify-center"></div>
           <input type="hidden" id="answer-input">
         </div>
-        
-        <!-- Keyboard input -->
+
+        <!-- Papan Input (ditambah tombol %) -->
         <div class="keyboard-container mb-4">
-          <!-- Angka dalam 1 baris -->
+          <!-- Angka -->
           <div class="grid grid-cols-10 gap-2 mb-3">
             <button class="calculator-button bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg text-xl font-bold">1</button>
             <button class="calculator-button bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg text-xl font-bold">2</button>
@@ -440,69 +141,70 @@
             <button class="calculator-button bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg text-xl font-bold">9</button>
             <button class="calculator-button bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg text-xl font-bold">0</button>
           </div>
-          
-          <!-- Huruf baris 1 (A-J) -->
+
+          <!-- Huruf A-J -->
           <div class="grid grid-cols-10 gap-2 mb-3">
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">A</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">B</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">C</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">D</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">E</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">F</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">G</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">H</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">I</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">J</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">A</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">B</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">C</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">D</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">E</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">F</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">G</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">H</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">I</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">J</button>
           </div>
-          
-          <!-- Huruf baris 2 (K-T) -->
+
+          <!-- Huruf K-T -->
           <div class="grid grid-cols-10 gap-2 mb-3">
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">K</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">L</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">M</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">N</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">O</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">P</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">Q</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">R</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">S</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">T</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">K</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">L</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">M</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">N</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">O</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">P</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">Q</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">R</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">S</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">T</button>
           </div>
-          
-          <!-- Huruf baris 3 (U-Z) dan karakter khusus -->
+
+          <!-- Huruf U-Z & karakter -->
           <div class="grid grid-cols-10 gap-2 mb-3">
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">U</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">V</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">W</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">X</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">Y</button>
-            <button class="calculator-button letter-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">Z</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">/</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">.</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">-</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">+</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">U</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">V</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">W</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">X</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">Y</button>
+            <button class="calculator-button bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg">Z</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">/</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">.</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">-</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">+</button>
           </div>
-          
-          <!-- Karakter khusus dan tombol aksi -->
+
+          <!-- Karakter khusus (+ persen %) -->
           <div class="grid grid-cols-10 gap-2 mb-3">
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">×</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">=</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">(</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">)</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">^</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">√</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">π</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">;</button>
-            <button class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">,</button>
-            <button id="fraction-button" class="calculator-button special-char-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">a/b</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">×</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">=</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">(</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">)</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">^</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">√</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">π</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">;</button>
+            <button class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">,</button>
+            <button id="fraction-button" class="calculator-button bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg">a/b</button>
           </div>
-          
-          <!-- Tombol hapus -->
-          <div class="grid grid-cols-1 gap-2 mb-3">
-            <button id="delete-button" class="calculator-button action-button bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg text-base font-bold">HAPUS</button>
+
+          <!-- Baris baru: tombol Persen (%) -->
+          <div class="grid grid-cols-3 gap-2 mb-3">
+            <button id="percent-button" class="calculator-button bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-lg text-xl font-bold">%</button>
+            <button id="delete-button" class="calculator-button action-button bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg text-base font-bold col-span-2">HAPUS</button>
           </div>
-          
-          <!-- Tombol aksi -->
+
+          <!-- Aksi -->
           <div class="grid grid-cols-2 gap-4">
             <button id="back-button" class="action-button bg-gray-500 hover:bg-gray-600 text-white py-4 rounded-lg text-xl font-bold">KEMBALI</button>
             <button id="submit-button" class="calculator-button action-button bg-green-500 hover:bg-green-600 text-white py-4 rounded-lg text-xl font-bold">KIRIM</button>
@@ -511,23 +213,19 @@
       </div>
     </div>
   </div>
-  
-  <!-- Modal untuk input pecahan -->
+
+  <!-- Modal Pecahan -->
   <div id="fraction-modal" class="modal hidden">
     <div class="modal-content">
       <h3 class="text-xl font-bold text-center mb-4">Input Pecahan</h3>
-      
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">Pembilang (Atas):</label>
         <input type="text" id="numerator-input" class="w-full p-2 border border-gray-300 rounded-lg text-lg active-input">
       </div>
-      
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">Penyebut (Bawah):</label>
         <input type="text" id="denominator-input" class="w-full p-2 border border-gray-300 rounded-lg text-lg">
       </div>
-      
-      <!-- Tombol angka untuk input pecahan -->
       <div class="grid grid-cols-5 gap-2 mb-4">
         <button class="fraction-number-button bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg text-xl font-bold">1</button>
         <button class="fraction-number-button bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg text-xl font-bold">2</button>
@@ -540,407 +238,287 @@
         <button class="fraction-number-button bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg text-xl font-bold">9</button>
         <button class="fraction-number-button bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg text-xl font-bold">0</button>
       </div>
-      
       <div class="grid grid-cols-2 gap-4 mb-4">
         <button id="switch-fraction-input" class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg">Pindah Input</button>
         <button id="clear-fraction-input" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg">Hapus</button>
       </div>
-      
       <div class="flex justify-between">
         <button id="cancel-fraction" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">Batal</button>
         <button id="confirm-fraction" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">Konfirmasi</button>
       </div>
     </div>
   </div>
-  
 
-  
-  <!-- Layar Hasil Benar -->
+  <!-- Layar Hasil -->
   <div id="result-correct" class="result-screen hidden" style="background-color: #10b981;">
     <div class="result-correct-content">
-      <h1 class="text-7xl font-bold text-white">JAWABAN BENAR!</h1>
+      <h1 class="text-6xl md:text-7xl font-bold text-white">JAWABAN BENAR!</h1>
     </div>
   </div>
-  
-  <!-- Layar Hasil Salah -->
   <div id="result-incorrect" class="result-screen hidden" style="background-color: #ef4444;">
     <div class="result-incorrect-content">
-      <h1 class="text-7xl font-bold text-white">JAWABAN SALAH!</h1>
+      <h1 class="text-6xl md:text-7xl font-bold text-white">JAWABAN SALAH!</h1>
     </div>
   </div>
 
   <script>
-    // Data kunci jawaban berdasarkan board
-    let answerKeysByClass = {
-      'Board1': {
-        1: "55;0,58;0,65;2/3",
-        2: "0,70;69;0,65;5/8",
-        3: "3/8;39;0,40;0,42",
-        4: "0,90;7/8;87;0,85",
-        5: "0",
-        6: "0",
-        7: "0",
-        8: "0",
-        9: "0",
-        10: "0"
-      },
-      'Board2': {
-        1: "1/8",
-        2: "1/27",
-        3: "1/81",
-        4: "0",
-        5: "0",
-        6: "0",
-        7: "0",
-        8: "0",
-        9: "0",
-        10: "0"
-      },
-      'Board3': {
-        1: "8√3",
-        2: "10√5",
-        3: "11√14",
-        4: "0",
-        5: "0",
-        6: "0",
-        7: "0",
-        8: "0",
-        9: "0",
-        10: "0"
-      }
+    // Kunci jawaban (tanpa board)
+    let answerKeys = {
+      1: ["55%","0,58","0,6","2/3"],
+      2: ["5/8","50%","0,48","0,45"],
+      3: ["0,68","0,7","70%","3/4"],
+      4: ["0,4","2/5","1/3","0,33"],
+      5: ["0,2","1/5","25%","0,3"],
+      6: ["7/8","0,85","5/6","0,8"],
+      7: ["0,52","0,55","11/20","0,6"],
+      8: ["0,5","0,48","45%","4/9"],
+      9: ["0,12","1/8","13%","0,15"],
+      10: ["7/10","0,7","69%","0,68"],
+      11: ["0,8","5/6","0,85","0,9"],
+      12: ["0,62","62%","0,6","3/5"],
+      13: ["1/4","25%","0,3","0,33"],
+      14: ["0,52","1/2","0,5","0,48"],
+      15: ["0,7","70%","72%","3/4"],
+      16: ["0,7","0,68","0,65","13/20"],
+      17: ["0,44","4/9","45%","0,5"],
+      18: ["0,85","0,81","4/5","0,8"],
+      19: ["0,28","3/10","0,3","29%"],
+      20: ["0,6","3/5","0,58","0,55"],
+      21: "27",
+      22: "20",
+      23: "32",
+      24: "75",
+      25: "252",
+      26: "539",
+      27: "832",
+      28: "162",
+      29: "500",
+      30: "726",
+      31: "13",
+      32: "5",
+      33: "15",
+      34: "4",
+      35: "35",
+      36: "1",
+      37: "3",
+      38: "21",
+      39: "8",
+      40: "2",
+      41: "32",
+      42: "42",
+      43: "26",
+      44: "25",
+      45: "37",
+      46: "40",
+      47: "44",
+      48: "15",
+      49: "34",
+      50: "32",
+      51: "27",
+      52: "44",
+      53: "26",
+      54: "99",
+      55: "100",
+      56: "0",
+      57: "0",
+      58: "275",
+      59: "0",
+      60: "0",
+      61: "48",
+      62: "40",
+      63: "24",
+      64: "24",
+      65: "38",
+      66: "90",
+      67: "70",
+      68: "60",
+      69: "42",
+      70: "60",
+      71: "90",
+      72: "150",
+      73: "32",
+      74: "120",
+      75: "100",
+      76: "90",
+      77: "60",
+      78: "15",
+      79: "28",
+      80: "24",
+      81: "KAMIS",
+      82: "KAMIS",
+      83: "JUMAT",
+      84: "JUMAT",
+      85: "SABTU",
+      86: "RABU",
+      87: "KAMIS",
+      88: "SENIN",
+      89: "SELASA",
+      90: "KAMIS",
+      91: "SABTU",
+      92: "MINGGU",
+      93: "KAMIS",
+      94: "RABU",
+      95: "SELASA",
+      96: "KAMIS",
+      97: "SELASA",
+      98: "SELASA",
+      99: "MINGGU",
+      100: "SELASA"
     };
-    
-    // Kunci jawaban aktif (akan diubah berdasarkan board yang dipilih)
-    let currentAnswerKeys = answerKeysByClass['Board1']; // Default ke Board1
-    
-    // Jumlah soal per board
-    let questionCountByClass = {
-      'Board1': 4,
-      'Board2': 3,
-      'Board3': 3
-    };
-    
-    // Jumlah soal aktif (akan diubah berdasarkan kelas yang dipilih)
-    let currentQuestionCount = 10;
-    
-    // URL Google Apps Script Web App
+
+    let currentQuestionCount = 100;
+
+    // URL Google Apps Script Web App (tetap sama, kolom board dikirim 'None')
     const GOOGLE_SCRIPT_URL = "https://script.google.com/a/macros/student.uin-malang.ac.id/s/AKfycbwRwQRorRMlq3dv_THz0wUIf5lDTgZss2jUlez-Y9pplWvLm2OuezziA3-0iWyyjMjzDQ/exec";
-    
-    // Data kelompok berdasarkan board
-    const studentsByClass = {
-      'Board1': [
-        "KELOMPOK 1",
-        "KELOMPOK 2",
-        "KELOMPOK 3",
-        "KELOMPOK 4",
-        "KELOMPOK 5",
-        "KELOMPOK 6"
-      ],
-      'Board2': [
-        "KELOMPOK 1",
-        "KELOMPOK 2",
-        "KELOMPOK 3",
-        "KELOMPOK 4",
-        "KELOMPOK 5",
-        "KELOMPOK 6"
-      ],
-      'Board3': [
-        "KELOMPOK 1",
-        "KELOMPOK 2",
-        "KELOMPOK 3",
-        "KELOMPOK 4",
-        "KELOMPOK 5",
-        "KELOMPOK 6"
-      ]
-    };
-    
-    // Variabel untuk menyimpan board yang dipilih
-    let selectedClass = null;
-    
-    // Elemen-elemen DOM
+
+    // Elemen
     const modeSelectPage = document.getElementById('mode-select-page');
-    const classSelectPage = document.getElementById('class-select-page');
-    const teacherPage = document.getElementById('teacher-page');
     const studentHomePage = document.getElementById('student-home-page');
     const answerPage = document.getElementById('answer-page');
+    const startBtn = document.getElementById('start-btn');
+    const backToStartBtn = document.getElementById('back-to-start');
+
     const contestantSelect = document.getElementById('contestant');
+    const questionButtonsContainer = document.getElementById('question-buttons');
+
     const questionNumberElement = document.getElementById('question-number');
     const contestantNameElement = document.getElementById('contestant-name');
     const answerDisplay = document.getElementById('answer-display');
     const answerInput = document.getElementById('answer-input');
-    const deleteButton = document.getElementById('delete-button');
-    const submitButton = document.getElementById('submit-button');
-    const backButton = document.getElementById('back-button');
-    const resultCorrect = document.getElementById('result-correct');
-    const resultIncorrect = document.getElementById('result-incorrect');
+
     const fractionModal = document.getElementById('fraction-modal');
     const numeratorInput = document.getElementById('numerator-input');
     const denominatorInput = document.getElementById('denominator-input');
+    const switchFractionInputBtn = document.getElementById('switch-fraction-input');
+    const clearFractionInputBtn = document.getElementById('clear-fraction-input');
     const cancelFractionBtn = document.getElementById('cancel-fraction');
     const confirmFractionBtn = document.getElementById('confirm-fraction');
     const fractionButton = document.getElementById('fraction-button');
-    const switchFractionInputBtn = document.getElementById('switch-fraction-input');
-    const clearFractionInputBtn = document.getElementById('clear-fraction-input');
-    const questionCountInput = document.getElementById('question-count');
-    const answerKeysContainer = document.getElementById('answer-keys-container');
-    const saveSettingsBtn = document.getElementById('save-settings');
-    const teacherClassSelect = document.getElementById('teacher-class-select');
-    
-    // Variabel untuk menyimpan nomor soal yang dipilih
+    const percentButton = document.getElementById('percent-button');
+
+    const deleteButton = document.getElementById('delete-button');
+    const submitButton = document.getElementById('submit-button');
+    const backButton = document.getElementById('back-button');
+
+    const resultCorrect = document.getElementById('result-correct');
+    const resultIncorrect = document.getElementById('result-incorrect');
+
+    // State
     let selectedQuestion = null;
-    
-
-    
-    // Variabel untuk input pecahan aktif
     let activeFractionInput = numeratorInput;
-    
-    // Event listeners untuk pemilihan mode
-    document.getElementById('student-mode-btn').addEventListener('click', () => {
-      modeSelectPage.classList.add('hidden');
-      classSelectPage.classList.remove('hidden');
-    });
-    
-    document.getElementById('teacher-mode-btn').addEventListener('click', () => {
-      modeSelectPage.classList.add('hidden');
-      teacherPage.classList.remove('hidden');
-      createClassSelector();
-    });
-    
-    // Event listeners untuk pemilihan board
-    document.getElementById('board1-btn').addEventListener('click', () => {
-      selectedClass = 'Board1';
-      currentAnswerKeys = answerKeysByClass['Board1'];
-      currentQuestionCount = questionCountByClass['Board1'];
-      showStudentHomePage();
-      populateContestantSelect();
-    });
-    
-    document.getElementById('board2-btn').addEventListener('click', () => {
-      selectedClass = 'Board2';
-      currentAnswerKeys = answerKeysByClass['Board2'];
-      currentQuestionCount = questionCountByClass['Board2'];
-      showStudentHomePage();
-      populateContestantSelect();
-    });
-    
-    document.getElementById('board3-btn').addEventListener('click', () => {
-      selectedClass = 'Board3';
-      currentAnswerKeys = answerKeysByClass['Board3'];
-      currentQuestionCount = questionCountByClass['Board3'];
-      showStudentHomePage();
-      populateContestantSelect();
-    });
-    
-    // Event listeners untuk tombol kembali
-    document.getElementById('back-to-mode-select-from-class').addEventListener('click', () => {
-      classSelectPage.classList.add('hidden');
-      modeSelectPage.classList.remove('hidden');
-    });
-    
-    document.getElementById('back-to-mode-select').addEventListener('click', () => {
-      teacherPage.classList.add('hidden');
-      modeSelectPage.classList.remove('hidden');
-    });
-    
-    document.getElementById('back-to-class-select').addEventListener('click', () => {
-      studentHomePage.classList.add('hidden');
-      classSelectPage.classList.remove('hidden');
-    });
-    
-    document.getElementById('back-to-mode-select-student').addEventListener('click', () => {
-      studentHomePage.classList.add('hidden');
-      modeSelectPage.classList.remove('hidden');
-    });
-    
 
-    
-    // Fungsi untuk mengisi dropdown kelompok berdasarkan board yang dipilih
-    function populateContestantSelect() {
+    // Start
+    startBtn.addEventListener('click', () => {
+      modeSelectPage.classList.add('hidden');
+      studentHomePage.classList.remove('hidden');
+      populateGroups();
+      createQuestionButtons();
+    });
+
+    backToStartBtn.addEventListener('click', () => {
+      studentHomePage.classList.add('hidden');
+      modeSelectPage.classList.remove('hidden');
+      resetAnswer();
       contestantSelect.innerHTML = '<option value="" disabled selected>-- Pilih Kelompok --</option>';
-      
-      if (selectedClass && studentsByClass[selectedClass]) {
-        studentsByClass[selectedClass].forEach(student => {
-          const option = document.createElement('option');
-          option.value = student;
-          option.textContent = student;
-          contestantSelect.appendChild(option);
-        });
-      }
+    });
+
+    function populateGroups() {
+      contestantSelect.innerHTML = '<option value="" disabled selected>-- Pilih Kelompok --</option>';
+      const groups = ["Kelompok 1","Kelompok 2","Kelompok 3","Kelompok 4","Kelompok 5","Kelompok 6"];
+      groups.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.textContent = g;
+        contestantSelect.appendChild(opt);
+      });
     }
-    
-    // Fungsi untuk membuat tombol nomor soal
+
     function createQuestionButtons() {
-      const questionButtonsContainer = document.getElementById('question-buttons');
       questionButtonsContainer.innerHTML = '';
-      
       for (let i = 1; i <= currentQuestionCount; i++) {
-        const button = document.createElement('button');
-        button.className = 'number-button bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-6 rounded-lg shadow';
-        button.textContent = i;
-        button.addEventListener('click', () => {
-          if (!contestantSelect.value) {
-            alert('Silakan pilih kelompok terlebih dahulu!');
-            return;
-          }
-          
+        const btn = document.createElement('button');
+        btn.className = 'number-button bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-6 rounded-lg shadow';
+        btn.textContent = i;
+        btn.addEventListener('click', () => {
+          if (!contestantSelect.value) { alert('Silakan pilih kelompok terlebih dahulu!'); return; }
           selectedQuestion = i;
           showAnswerPage(i, contestantSelect.value);
         });
-        
-        questionButtonsContainer.appendChild(button);
+        questionButtonsContainer.appendChild(btn);
       }
     }
-    
-    // Fungsi untuk membuat board selector di panel guru
-    function createClassSelector() {
-      // Event listener untuk perubahan board di panel guru
-      teacherClassSelect.addEventListener('change', () => {
-        const selectedTeacherClass = teacherClassSelect.value;
-        if (selectedTeacherClass) {
-          // Set jumlah soal sesuai board yang dipilih
-          questionCountInput.value = questionCountByClass[selectedTeacherClass] || 10;
-          createAnswerKeyInputs(selectedTeacherClass);
-        }
-      });
-    }
-    
-    // Fungsi untuk membuat input kunci jawaban
-    function createAnswerKeyInputs(classKey = 'Board1') {
-      answerKeysContainer.innerHTML = '';
-      
-      if (!classKey) {
-        answerKeysContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Silakan pilih board terlebih dahulu</p>';
-        return;
-      }
-      
-      const classAnswers = answerKeysByClass[classKey] || {};
-      
-      for (let i = 1; i <= questionCountInput.value; i++) {
-        const inputGroup = document.createElement('div');
-        inputGroup.className = 'flex items-center';
-        
-        const label = document.createElement('label');
-        label.className = 'w-16 text-right mr-3';
-        label.textContent = `Soal ${i}:`;
-        
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'flex-1 p-2 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500';
-        input.value = classAnswers[i] || '';
-        input.dataset.questionNumber = i;
-        input.dataset.classKey = classKey;
-        
-        inputGroup.appendChild(label);
-        inputGroup.appendChild(input);
-        answerKeysContainer.appendChild(inputGroup);
-      }
-    }
-    
-    // Event listener untuk perubahan jumlah soal
-    questionCountInput.addEventListener('change', () => {
-      const selectedTeacherClass = teacherClassSelect.value;
-      if (selectedTeacherClass) {
-        createAnswerKeyInputs(selectedTeacherClass);
-      }
-    });
-    
-    // Event listener untuk menyimpan pengaturan
-    saveSettingsBtn.addEventListener('click', () => {
-      const selectedTeacherClass = teacherClassSelect.value;
-      
-      if (!selectedTeacherClass) {
-        showToast("Silakan pilih kelas terlebih dahulu", "bg-red-500");
-        return;
-      }
-      
-      // Simpan jumlah soal untuk kelas yang dipilih
-      questionCountByClass[selectedTeacherClass] = parseInt(questionCountInput.value);
-      
-      // Update currentQuestionCount jika kelas yang sedang aktif sama dengan yang diedit
-      if (selectedClass === selectedTeacherClass) {
-        currentQuestionCount = questionCountByClass[selectedTeacherClass];
-      }
-      
-      // Simpan kunci jawaban untuk kelas yang dipilih
-      const answerInputs = answerKeysContainer.querySelectorAll('input');
-      
-      answerInputs.forEach(input => {
-        const questionNumber = parseInt(input.dataset.questionNumber);
-        const classKey = input.dataset.classKey;
-        
-        if (!answerKeysByClass[classKey]) {
-          answerKeysByClass[classKey] = {};
-        }
-        
-        answerKeysByClass[classKey][questionNumber] = input.value;
-      });
-      
-      showToast(`Pengaturan untuk Kelas ${selectedTeacherClass} berhasil disimpan`, "bg-green-500");
-    });
-    
 
-    
-    // Menambahkan event listener untuk tombol input
-    const calculatorButtons = document.querySelectorAll('.calculator-button:not(#delete-button):not(#submit-button):not(#fraction-button)');
-    calculatorButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        appendToAnswer(button.textContent);
-      });
+    function showAnswerPage(q, groupName) {
+      studentHomePage.classList.add('hidden');
+      answerPage.classList.remove('hidden');
+      questionNumberElement.textContent = `Soal #${q}`;
+      contestantNameElement.textContent = `Kelompok: ${groupName}`;
+      resetAnswer();
+    }
+
+    // Input Jawaban
+    const calculatorButtons = document.querySelectorAll('.calculator-button:not(#delete-button):not(#submit-button):not(#fraction-button):not(#percent-button)');
+    calculatorButtons.forEach(b => b.addEventListener('click', () => appendToAnswer(b.textContent)));
+
+    percentButton.addEventListener('click', () => {
+      appendToAnswer('%');
     });
-    
-    // Event listener untuk tombol pecahan
+
+    function appendToAnswer(char) {
+      // Jika jawaban berupa pecahan visual, abaikan input biasa agar tidak campur
+      if (answerDisplay.querySelector('.fraction-display')) return;
+      answerInput.value += char;
+      answerDisplay.textContent = answerInput.value;
+    }
+
+    deleteButton.addEventListener('click', resetAnswer);
+
+    function resetAnswer() {
+      answerInput.value = '';
+      answerDisplay.textContent = '';
+      // Tutup modal pecahan bila terbuka
+      fractionModal.classList.add('hidden');
+    }
+
+    backButton.addEventListener('click', () => {
+      answerPage.classList.add('hidden');
+      studentHomePage.classList.remove('hidden');
+      resetAnswer();
+    });
+
+    // Pecahan
     fractionButton.addEventListener('click', () => {
       fractionModal.classList.remove('hidden');
       numeratorInput.value = '';
       denominatorInput.value = '';
-      
-      // Set numerator sebagai input aktif
       activeFractionInput = numeratorInput;
       numeratorInput.classList.add('active-input');
       denominatorInput.classList.remove('active-input');
-      
       numeratorInput.focus();
     });
-    
-    // Event listener untuk tombol batal pecahan
+
     cancelFractionBtn.addEventListener('click', () => {
       fractionModal.classList.add('hidden');
     });
-    
-    // Event listener untuk tombol konfirmasi pecahan
+
     confirmFractionBtn.addEventListener('click', () => {
-      const numerator = numeratorInput.value.trim();
-      const denominator = denominatorInput.value.trim();
-      
-      if (!numerator || !denominator) {
-        alert('Silakan isi pembilang dan penyebut');
-        return;
-      }
-      
-      const fractionValue = `${numerator}/${denominator}`;
-      answerInput.value = fractionValue;
-      
-      // Membuat tampilan pecahan
+      const n = numeratorInput.value.trim();
+      const d = denominatorInput.value.trim();
+      if (!n || !d) { alert('Silakan isi pembilang dan penyebut'); return; }
+      const value = `${n}/${d}`;
+      answerInput.value = value;
+
       answerDisplay.innerHTML = '';
-      const fractionDisplay = document.createElement('div');
-      fractionDisplay.className = 'fraction-display';
-      
-      const numeratorSpan = document.createElement('span');
-      numeratorSpan.className = 'numerator';
-      numeratorSpan.textContent = numerator;
-      
-      const denominatorSpan = document.createElement('span');
-      denominatorSpan.className = 'denominator';
-      denominatorSpan.textContent = denominator;
-      
-      fractionDisplay.appendChild(numeratorSpan);
-      fractionDisplay.appendChild(denominatorSpan);
-      answerDisplay.appendChild(fractionDisplay);
-      
+      const frac = document.createElement('div');
+      frac.className = 'fraction-display';
+      const num = document.createElement('span'); num.className = 'numerator'; num.textContent = n;
+      const den = document.createElement('span'); den.className = 'denominator'; den.textContent = d;
+      frac.appendChild(num); frac.appendChild(den);
+      answerDisplay.appendChild(frac);
+
       fractionModal.classList.add('hidden');
     });
-    
-    // Event listener untuk tombol pindah input pecahan
+
     switchFractionInputBtn.addEventListener('click', () => {
       if (activeFractionInput === numeratorInput) {
         activeFractionInput = denominatorInput;
@@ -954,208 +532,95 @@
         numeratorInput.focus();
       }
     });
-    
-    // Event listener untuk tombol hapus input pecahan
+
     clearFractionInputBtn.addEventListener('click', () => {
       activeFractionInput.value = '';
     });
-    
-    // Event listener untuk tombol angka di modal pecahan
-    const fractionNumberButtons = document.querySelectorAll('.fraction-number-button');
-    fractionNumberButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        activeFractionInput.value += button.textContent;
-      });
-    });
-    
-    // Event listener untuk focus pada input pecahan
-    numeratorInput.addEventListener('focus', () => {
-      activeFractionInput = numeratorInput;
-      numeratorInput.classList.add('active-input');
-      denominatorInput.classList.remove('active-input');
-    });
-    
-    denominatorInput.addEventListener('focus', () => {
-      activeFractionInput = denominatorInput;
-      denominatorInput.classList.add('active-input');
-      numeratorInput.classList.remove('active-input');
-    });
-    
-    // Event listener untuk tombol hapus
-    deleteButton.addEventListener('click', () => {
-      answerInput.value = '';
-      answerDisplay.textContent = '';
-    });
-    
-    // Event listener untuk tombol kirim
+
+    // Kirim jawaban
     submitButton.addEventListener('click', () => {
       const userAnswer = answerInput.value;
-      if (!userAnswer) {
-        showToast("Silakan masukkan jawaban terlebih dahulu", "bg-yellow-500");
-        return;
+      if (!userAnswer) { showToast("Silakan masukkan jawaban terlebih dahulu", "bg-yellow-500"); return; }
+
+      const correctAnswer = answerKeys[selectedQuestion];
+      const normalize = (v) => (typeof v === 'string' ? v.trim() : v);
+      let isCorrect;
+      if (Array.isArray(correctAnswer)) {
+        const options = correctAnswer.map(normalize);
+        isCorrect = options.includes(normalize(userAnswer));
+      } else {
+        isCorrect = normalize(userAnswer) === normalize(correctAnswer);
       }
-      
-      const correctAnswer = currentAnswerKeys[selectedQuestion];
-      const isCorrect = userAnswer === correctAnswer;
-      
-      // Menonaktifkan tombol kirim saat proses pengiriman
+
       submitButton.disabled = true;
       submitButton.innerHTML = "Mengirim... <span class='loading-spinner'></span>";
-      
-      // Mengirim data ke Google Spreadsheet
+
       sendDataToSpreadsheet({
         contestant: contestantSelect.value,
         questionNumber: selectedQuestion,
         answer: userAnswer,
         isCorrect: isCorrect,
         timestamp: new Date().toISOString(),
-        board: selectedClass,
-        class: selectedClass
+        board: 'None',   // Board dihapus → kirim 'None' agar sheet tetap menerima
+        class: 'None'
       })
       .then(() => {
         showToast("Data berhasil disimpan", "bg-green-500");
-        
-        // Menampilkan hasil
-        if (isCorrect) {
-          showCorrectAnimation();
-        } else {
-          showIncorrectAnimation();
-        }
+        if (isCorrect) showCorrectAnimation(); else showIncorrectAnimation();
       })
-      .catch(error => {
-        console.error("Error:", error);
-        showToast("Gagal menyimpan data: " + error.message, "bg-red-500");
+      .catch(err => {
+        console.error(err);
+        showToast("Gagal menyimpan data", "bg-red-500");
       })
       .finally(() => {
-        // Mengaktifkan kembali tombol kirim
         submitButton.disabled = false;
         submitButton.innerHTML = "KIRIM";
       });
     });
-    
-    // Fungsi untuk menampilkan animasi jawaban benar
+
     function showCorrectAnimation() {
       resultCorrect.classList.remove('hidden');
-      
       setTimeout(() => {
         resultCorrect.classList.add('hidden');
-        showBoardSelectPage();
+        // Tanpa board → kembali ke pilih kelompok & soal
+        answerPage.classList.add('hidden');
+        studentHomePage.classList.remove('hidden');
+        resetAnswer();
       }, 2000);
     }
-    
-    // Fungsi untuk menampilkan animasi jawaban salah
+
     function showIncorrectAnimation() {
       resultIncorrect.classList.remove('hidden');
-      
       setTimeout(() => {
         resultIncorrect.classList.add('hidden');
-        showBoardSelectPage();
+        // Tanpa board → kembali ke pilih kelompok & soal
+        answerPage.classList.add('hidden');
+        studentHomePage.classList.remove('hidden');
+        resetAnswer();
       }, 2000);
     }
-    
-    // Event listener untuk tombol kembali
-    backButton.addEventListener('click', () => {
-      showStudentHomePage();
-    });
-    
 
-    
-
-    
-    // Fungsi untuk menambahkan karakter ke jawaban
-    function appendToAnswer(char) {
-      // Jika jawaban adalah pecahan, jangan tambahkan karakter
-      if (answerDisplay.querySelector('.fraction-display')) {
-        return;
-      }
-      
-      answerInput.value += char;
-      answerDisplay.textContent = answerInput.value;
-    }
-    
-    // Fungsi untuk menampilkan halaman jawaban
-    function showAnswerPage(questionNumber, contestantName) {
-      studentHomePage.classList.add('hidden');
-      answerPage.classList.remove('hidden');
-      
-      questionNumberElement.textContent = `Soal #${questionNumber}`;
-      contestantNameElement.textContent = `Peserta: ${contestantName.split(' ')[0]}`;  // Hanya tampilkan nama depan
-      answerInput.value = '';
-      answerDisplay.textContent = '';
-    }
-    
-    // Fungsi untuk menampilkan halaman awal siswa
-    function showStudentHomePage() {
-      classSelectPage.classList.add('hidden');
-      answerPage.classList.add('hidden');
-      studentHomePage.classList.remove('hidden');
-      
-      // Reset form jawaban
-      answerInput.value = '';
-      answerDisplay.textContent = '';
-      
-      // Pastikan tombol soal ter-update
-      createQuestionButtons();
-    }
-    
-    // Fungsi untuk menampilkan halaman pemilihan board
-    function showBoardSelectPage() {
-      studentHomePage.classList.add('hidden');
-      answerPage.classList.add('hidden');
-      classSelectPage.classList.remove('hidden');
-      
-      // Reset form jawaban
-      answerInput.value = '';
-      answerDisplay.textContent = '';
-      
-      // Reset pilihan board dan kelompok
-      selectedClass = null;
-      contestantSelect.innerHTML = '<option value="" disabled selected>-- Pilih Kelompok --</option>';
-    }
-    
-    // Fungsi untuk mengirim data ke Google Spreadsheet
+    // Kirim ke Spreadsheet
     async function sendDataToSpreadsheet(data) {
       try {
-        // Menggunakan fetch API untuk mengirim data ke Google Apps Script
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
+        await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain',  // Google Apps Script memerlukan format ini
-          },
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify(data),
-          mode: 'no-cors'  // Penting untuk menghindari masalah CORS dengan Google Apps Script
+          mode: 'no-cors'
         });
-        
-        console.log("Data terkirim ke Google Spreadsheet");
         return true;
-      } catch (error) {
-        console.error("Error saat mengirim data:", error);
-        throw error;
-      }
+      } catch (e) { throw e; }
     }
-    
-    // Fungsi untuk menampilkan toast notification
+
     function showToast(message, bgColor) {
-      // Hapus toast yang sudah ada
-      const existingToast = document.querySelector('.toast');
-      if (existingToast) {
-        existingToast.remove();
-      }
-      
-      // Buat toast baru
+      const existing = document.querySelector('.toast'); if (existing) existing.remove();
       const toast = document.createElement('div');
       toast.className = `toast ${bgColor}`;
       toast.textContent = message;
       document.body.appendChild(toast);
-      
-      // Hapus toast setelah animasi selesai
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
+      setTimeout(() => toast.remove(), 3000);
     }
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96aa7b2e4182ea81',t:'MTc1NDQ0MDgwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9804be4d7656df7c',t:'MTc1ODA3MTYzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-
-
